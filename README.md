@@ -9,7 +9,9 @@ Password: admin
 
 
 Para instalarlo
-
+```
 git clone https://github.com/mclitos/teedy
-
+```
+```
 docker-compose up -d
+```
