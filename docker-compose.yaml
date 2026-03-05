@@ -1,37 +1,35 @@
-version: "3"
-
 services:
 
   teedy:
-    image: jdreinhardt/teedy:latest
+    image: sismics/docs:latest
+    container_name: teedy
     restart: unless-stopped
-    depends_on: 
-      - teedy_db
     ports:
-      - "8200:8080" # # Cambiar o Habilitar Puerto
-    volumes:
-      - ./data:/data
+      - "8200:8080"
     environment:
-      - JAVA_OPTIONS=-Xmx1024m
-      - OCR_LANGS=spa
-      - DATABASE_USER=user
-      - DATABASE_PASSWORD=p4ssw0rd # Cambiar Contraseña
-    networks:
-      - teedy
+      DOCS_BASE_URL: "http://localhost:8200"
+      DOCS_DEFAULT_LANGUAGE: "spa"
+      DATABASE_URL: "jdbc:postgresql://teedy-db:5432/teedy"
+      DATABASE_USER: "teedy_db_user"
+      DATABASE_PASSWORD: "teedy_db_password"
+      DATABASE_POOL_SIZE: "10"      
+    volumes:
+      - ./docs/data:/data
+    depends_on:
+      - teedy-db
 
-  teedy_db:
+  teedy-db:
     image: postgres:13.1-alpine
+    container_name: teedy-db
     restart: unless-stopped
+    expose:
+      - 5432
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=p4ssw0rd # Cambiar Contraseña
-      - POSTGRES_DB=teedy
+      POSTGRES_USER: "teedy_db_user"
+      POSTGRES_PASSWORD: "teedy_db_password"
+      POSTGRES_DB: "teedy"
     volumes:
-      - ./db:/var/lib/postgresql/data
-    networks:
-      - teedy
+      - ./docs/db:/var/lib/postgresql/data  
 
-networks:
-  teedy:  
 
        
